@@ -1,0 +1,23 @@
+.leftside
+{
+   height: 100%;
+   width: 35%;
+   background-color: rgb(245, 245, 245);
+}
+.rightside
+{
+     height: 100%;
+     width: 65%;
+   background-color: rgb(248 249 251);
+  
+}
+
+.add{
+   position: relative;
+   bottom: 0;
+   right: 0;
+
+}
+li:hover{
+   background: #dcdbdb;
+}
