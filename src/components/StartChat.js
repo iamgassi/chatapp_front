@@ -119,11 +119,10 @@ const StartChat = () => {
   };
 
   const handleList=(id)=>{
-    // navigate('/')
+  
     console.log(id,"handleList")
     // cookies.set('recieverId', id, { path: '/', maxAge: 30*60000 });
     console.log("handleList",id)
-    // navigate('/chat')
     setId(id)    
   }
 

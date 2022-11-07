@@ -6,6 +6,7 @@ import { Avatar, TextField } from '@mui/material';
 import React, {  useEffect, useState } from 'react'
 import axios from 'axios'
 import io from 'socket.io-client'
+import FileBase64 from 'react-file-base64';
 
 import Cookies from 'universal-cookie'; 
 import './Chat.css'
@@ -29,6 +30,7 @@ const Chat = () => {
   const [searchParams] = useSearchParams();
   console.log(searchParams.get('id')); // 'id'
   const recieverId=searchParams.get('id')
+
   useEffect(function(){
     
     if(recieverId){
@@ -40,9 +42,13 @@ const Chat = () => {
   
   useEffect(()=>{
     socket=io('http://localhost:8000');
-    socket.on('message',(data)=>{
-      console.log('FROM SOCKET',data)  
-      setMessages(messages=>[...messages,<li key={Date.now()}>{data}</li>])
+    socket.on('message',(data,sendBy)=>{
+      console.log('FROM SOCKET',data,sendBy)  
+      setMessages(messages=>[...messages,<div className={userId===sendBy?"onTime":"prevMsg"} key={Date.now()}>{data}</div>])
+    })
+    socket.on('image',(img,sendBy)=>{
+      console.log('Image from SOCKET',img)  
+      setMessages(messages=>[...messages,<img className={userId===sendBy?"onTime":"prevMsg"} src={img} key={Date.now()}/>])
     })
   },[])
   
@@ -54,13 +60,12 @@ const Chat = () => {
   const open = Boolean(anchorEl);
 
   const [input,setInput]=useState('');
+  const [image,setImage]=useState('');
+
   const [prevMsg,setPrevMsg]=useState([])
   const [enter, setEnter] = useState(false)
   const userId=cookies.get("userId")
   // const recieverId=cookies.get("recieverId")
-
-
-  
 
    const getPreviousChat=async(recieverId)=>{    
     const reciever_id=recieverId
@@ -94,8 +99,8 @@ const Chat = () => {
       {
         for(let item of data)
         {
-          console.log(item.content)
-          setPrevMsg(prev=>[...prev,item.content]) 
+          console.log(item)
+          setPrevMsg(prev=>[...prev,item]) 
         }
         
       }
@@ -120,7 +125,7 @@ const Chat = () => {
     setEnter(true)
     if (input) {
      
-     socket.emit('chat message', input);
+     socket.emit('chat message',input,userId);
      
      console.log("Chat message is send")
      const u2u=
@@ -154,6 +159,44 @@ const Chat = () => {
     setInput("")
     setEnter(false)
 }
+
+const handleImage=(e)=>{
+  e.preventDefault()
+  if (image) { 
+    setImage("")
+    console.log("Inside Image")
+    socket.emit('chat image', image,userId);
+    
+    console.log("chat image is send")
+    const u2u=
+    {
+      sender:self,
+      reciever:chatWith
+    }
+
+    console.log(chatWith)
+
+   
+    let obj={
+     user2user:u2u,
+     img:image
+     
+   }
+    try {
+      // console.log(image) 
+      fetch("http://localhost:8000/image",{
+       method:"POST",
+       body:JSON.stringify(obj),
+       headers:{
+         "Content-Type":"application/json",
+       }
+     })
+    } 
+    catch (error) {
+     console.log(error)
+    }
+     }
+}
   
 
   const optionDot = (event) => {
@@ -166,6 +209,8 @@ const Chat = () => {
   
     console.log("handleClose ()")
   };
+  console.log("object",self.username)
+  console.log("prev",prevMsg.createdBy)
   return (
 
     <div className="app">
@@ -218,14 +263,30 @@ const Chat = () => {
    </div>
 
    <div className='content'>
-   <ul id="messages">
-          {(prevMsg.map((el,index)=>{return <li key={index}>{el}</li>}))}
+   <div id="messages">
+        
+          {(prevMsg.map((el,index)=>{return (
+            <div key={index} className={self.username===el.createdBy?"onTime":"prevMsg"}> 
+              <div >{el.content}</div>
+              <img  src={el.image}/>
+            </div>
+          )}))}
           {messages.length?messages:null}
-        </ul>
+        </div>
    </div>
 
    <div className='sendBox'>
-      
+    <form onSubmit={handleImage}>
+
+   <FileBase64
+    type="file"
+    // onChange={e => setImage(e.target.value )}
+    multiple={false}
+    onDone={({base64})=>setImage(base64)}
+    />
+    <button type='submit'>send</button>
+    </form>
+
      <form id="form" onSubmit={handleSubmit}>
         <TextField
         hiddenLabel
@@ -240,6 +301,7 @@ const Chat = () => {
         autoComplete='off'
       />
     </form>
+  
        {/* <input id="input" onChange={e=>setInput(e.target.value)} value={input} autoComplete="off" />
        <button onClick={handleSubmit}>Send</button> */}
    </div>

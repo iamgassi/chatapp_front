@@ -3,15 +3,15 @@
 }
 .content
 {
-    min-height:80vh;
+    min-height:77vh;
     border: 2px solid rgb(242, 238, 238);
-    max-height: 80vh;
+    max-height: 72vh;
     overflow-y:auto;
   
 }
 .sendBox{
     border:2px solid rgb(220, 219, 219);
-    min-height:6vh;
+    min-height:8vh;
     
 }
 
@@ -33,4 +33,21 @@
 
 ul{
     list-style-type: none;
+}
+
+.prevMsg ,img{
+    max-width: 25rem;
+    max-height: 25rem;
+}
+
+.prevMsg{
+    padding: 0  1rem;
+    clear: both;
+    float: left;
+}
+
+.onTime{
+    float: right;
+    clear: both;
+    padding: 0  1rem;
 }
