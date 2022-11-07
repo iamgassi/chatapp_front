@@ -11,8 +11,7 @@
 }
 .sendBox{
     border:2px solid rgb(220, 219, 219);
-    min-height:8vh;
-    
+    min-height:8vh; 
 }
 
 .container
@@ -31,9 +30,7 @@
 /* #messages > li { padding: 0.5rem 3rem; clear:both; }
 #messages > li:nth-child(odd) { clear:both ; float:right } */
 
-ul{
-    list-style-type: none;
-}
+
 
 .prevMsg ,img{
     max-width: 25rem;
@@ -41,13 +38,33 @@ ul{
 }
 
 .prevMsg{
-    padding: 0  1rem;
+    padding: 0.5rem;
     clear: both;
     float: left;
+    border: 2px solid rgba(81, 162, 168, 0.881);
+    /* border: outset; */
+    border-radius:10px;
+    border-right-width: thick;
+    background: #bee4bc;
+    
 }
 
 .onTime{
-    float: right;
+    border: 2px solid rgba(81, 162, 168, 0.881);
+    background: #bee4bc;
+    padding:.5rem;
     clear: both;
-    padding: 0  1rem;
+    float: right;
+    /* border: outset; */
+    border-radius:10px;
+    border-left-width: thick;
+}
+
+.input
+{
+  display: inline;
+}
+
+.file{
+    display: inline;
 }

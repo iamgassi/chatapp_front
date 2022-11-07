@@ -7,6 +7,7 @@ import React, {  useEffect, useState } from 'react'
 import axios from 'axios'
 import io from 'socket.io-client'
 import FileBase64 from 'react-file-base64';
+import SendIcon from '@mui/icons-material/Send';
 
 import Cookies from 'universal-cookie'; 
 import './Chat.css'
@@ -267,8 +268,8 @@ const handleImage=(e)=>{
         
           {(prevMsg.map((el,index)=>{return (
             <div key={index} className={self.username===el.createdBy?"onTime":"prevMsg"}> 
-              <div >{el.content}</div>
-              <img  src={el.image}/>
+              <div >{el.content|| <img  src={el.image}/>}</div>
+              {/* <img  src={el.image}/> */}
             </div>
           )}))}
           {messages.length?messages:null}
@@ -280,11 +281,10 @@ const handleImage=(e)=>{
 
    <FileBase64
     type="file"
-    // onChange={e => setImage(e.target.value )}
     multiple={false}
     onDone={({base64})=>setImage(base64)}
     />
-    <button type='submit'>send</button>
+    <SendIcon onClick={handleImage}></SendIcon>
     </form>
 
      <form id="form" onSubmit={handleSubmit}>
