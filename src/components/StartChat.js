@@ -42,7 +42,6 @@ const ITEM_HEIGHT = 48;
 const StartChat = () => {
 
   const [allUsers, setallUsers] = useState([])
-  const [click, setClick] = useState(false)
   const [user, setuser] = useState([])
   const [Id, setId] = useState('')
   const userId=cookies.get("userId")
@@ -79,6 +78,7 @@ const StartChat = () => {
   useEffect(function(){
     onLoad()
     // chatWith()
+
    },[]);
 
   
@@ -107,7 +107,7 @@ const StartChat = () => {
    {
      cookies.remove("loggedIn",{ path: '/'});
      cookies.remove("userId",{ path: '/'});
-     cookies.remove("recieverId",{ path: '/'});
+    //  cookies.remove("recieverId",{ path: '/'});
      navigate('/');
    }
      else if(option==='New Chat')
@@ -121,10 +121,9 @@ const StartChat = () => {
   const handleList=(id)=>{
     // navigate('/')
     console.log(id,"handleList")
-    cookies.set('recieverId', id, { path: '/', maxAge: 30*60000 });
+    // cookies.set('recieverId', id, { path: '/', maxAge: 30*60000 });
     console.log("handleList",id)
     // navigate('/chat')
-    setClick(true)
     setId(id)    
   }
 
@@ -194,7 +193,9 @@ const StartChat = () => {
               {
                 return (
                   <div  key={user.sender_id ||  user.reciever_id}>
-            <Link to="/Chat">       
+            {/* <Link to="/Chat" >        */}
+           <Link to={`/chat?id=${user.sender_id ||  user.reciever_id}`}>       
+
            <ListItem alignItems="flex-start" style={{cursor:"pointer"}}>
            <ListItemAvatar>
            <Avatar alt={user.createdBy||user.createdWith} src="#" />
@@ -210,7 +211,7 @@ const StartChat = () => {
                 color="text.primary"
                 
               >
-               Hello
+               ......
               </Typography>
              
             </React.Fragment>
@@ -227,7 +228,39 @@ const StartChat = () => {
                 )
               })
           }
-    </List>):(<h4>No Chat Yet</h4>)}
+    </List>):
+    (
+    // <h4>No Chat Yet</h4>
+    <List sx={{ width: '100%', maxWidth: 500, bgcolor: 'background.paper' }}>
+      {/* handleClickOpen('paper')() */}
+      <ListItem alignItems="flex-start" style={{cursor:"pointer"}}>
+           <ListItemAvatar>
+           <Avatar alt={"S"} src="#" />
+           </ListItemAvatar>
+           <ListItemText
+          primary={"Start Chat"}
+          secondary={
+            <React.Fragment>
+              <Typography
+                sx={{ display: 'inline' }}
+                component="span"
+                variant="body2"
+                color="text.primary"
+                
+              >
+               New Chat
+              </Typography>
+             
+            </React.Fragment>
+          }
+          onClick={handleClickOpen('paper')}
+          
+          />
+      </ListItem>
+      </List>
+
+    )
+    }
 
       </div>
 
@@ -255,7 +288,9 @@ const StartChat = () => {
     {
       return (
         <div  key={user._id}>
-  <Link to="/Chat">       
+  {/* <Link to="/Chat" >       */}
+  <Link to={`/chat?id=${user._id}`}>       
+
  <ListItem alignItems="flex-start" style={{cursor:"pointer"}}>
  <ListItemAvatar>
  <Avatar alt={user.username} src="#" />

@@ -12,7 +12,7 @@ function App() {
     <Routes>
     <Route exact path="/" element={ <Login/>}> </Route>
     <Route exact path="/register" element={ <Register/>}> </Route>
-    <Route exact path="/chat" element={ <Chat/>}> </Route>
+    <Route path="/chat" element={ <Chat/>}> </Route>
     <Route exact path="/startChat" element={ <StartChat/>}> </Route>
 
   </Routes>

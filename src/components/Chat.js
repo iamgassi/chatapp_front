@@ -11,6 +11,8 @@ import Cookies from 'universal-cookie';
 import './Chat.css'
 
 import bg from './whatsapp__default.png'
+
+import { useSearchParams } from 'react-router-dom';
 const cookies = new Cookies();
 
 const options = [
@@ -23,13 +25,16 @@ const ITEM_HEIGHT = 48;
 let socket
 
 
-
 const Chat = () => {
+  const [searchParams] = useSearchParams();
+  console.log(searchParams.get('id')); // 'id'
+  const recieverId=searchParams.get('id')
   useEffect(function(){
+    
     if(recieverId){
-      // onNewId()
+      console.log(recieverId)
       onLoad()
-      getPreviousChat()
+      getPreviousChat(recieverId)
     }
   },[recieverId]);
   
@@ -52,12 +57,12 @@ const Chat = () => {
   const [prevMsg,setPrevMsg]=useState([])
   const [enter, setEnter] = useState(false)
   const userId=cookies.get("userId")
-  const recieverId=cookies.get("recieverId")
+  // const recieverId=cookies.get("recieverId")
 
 
   
 
-   const getPreviousChat=async()=>{    
+   const getPreviousChat=async(recieverId)=>{    
     const reciever_id=recieverId
     const sender_id=userId
      
@@ -96,38 +101,6 @@ const Chat = () => {
       }
       
     }
-  //  const onLoad=async()=>{
-
-  //  console.log(recieverId)
-  //  fetch(`http://localhost:8000/user/${recieverId}`)
-  //     .then(function(response){
-  //      console.log(response)
-  //      return response.json();
-  //    })
-  //     .then(function(data){
-  //       console.log(data);
-  //       setChatWith(data)
-        
-  //    })
-  //     .catch(function(err){
-  //       console.log(err);
-  //    });
-
-  //    fetch(`http://localhost:8000/user/${userId}`)
-  //    .then(function(response){
-  //     console.log(response)
-  //     return response.json();
-  //   })
-  //    .then(function(data){
-  //      console.log(data);
-  //      setSelf(data)
-       
-  //   })
-  //    .catch(function(err){
-  //      console.log(err);
-  //   });
-     
-  //  }
 
   const onLoad=async()=>{
 
