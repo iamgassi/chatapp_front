@@ -23,12 +23,12 @@ li:hover{
 }
 .optionDot
 {
-   float:right
+   float:right;
    
 }
 .username
 {
-   color:rgb(13, 135, 135);
+   color:rgb(233, 241, 241);
    font-weight: 700;
    font-size: larger;
    
@@ -38,4 +38,7 @@ li:hover{
    color:rgb(76, 77, 77);
    font-weight: 700;
    font-size: larger;  
+}
+.nav{
+   background-color: #00a884;
 }

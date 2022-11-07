@@ -141,7 +141,7 @@ const StartChat = () => {
     <div className="app__top"></div>
     <div className="app__container">
       <div className='leftside'>
-
+      <div className='nav'>
       <IconButton>
       <Avatar  alt="A Sharp" />
   
@@ -151,6 +151,7 @@ const StartChat = () => {
     
 
       <IconButton   
+        style={{ color: 'white' }}      
         className='optionDot'     
         aria-label="more"
         aria-controls={open ? 'long-menu' : undefined}
@@ -183,6 +184,7 @@ const StartChat = () => {
         ))}
 
       </Menu>
+      </div>
 
 
 
