@@ -21,3 +21,21 @@
 li:hover{
    background: #dcdbdb;
 }
+.optionDot
+{
+   float:right
+   
+}
+.username
+{
+   color:rgb(13, 135, 135);
+   font-weight: 700;
+   font-size: larger;
+   
+}
+.ListUsername
+{
+   color:rgb(76, 77, 77);
+   font-weight: 700;
+   font-size: larger;  
+}

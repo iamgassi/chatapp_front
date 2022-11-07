@@ -68,3 +68,10 @@
 .file{
     display: inline;
 }
+
+.ChatWith
+{
+    color:rgb(238, 247, 243);
+    font-weight: 700;
+    font-size: larger;
+}

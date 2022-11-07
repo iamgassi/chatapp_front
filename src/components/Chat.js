@@ -8,13 +8,14 @@ import axios from 'axios'
 import io from 'socket.io-client'
 import FileBase64 from 'react-file-base64';
 import SendIcon from '@mui/icons-material/Send';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import Cookies from 'universal-cookie'; 
 import './Chat.css'
 
 import bg from './whatsapp__default.png'
 
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 const cookies = new Cookies();
 
 const options = [
@@ -56,6 +57,7 @@ const Chat = () => {
   const [messages,setMessages]=useState([])
   const [chatWith, setChatWith] = useState([])
   const [self, setSelf] = useState([])
+  const navigate = useNavigate();
 
   const [anchorEl, setAnhchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -221,16 +223,17 @@ const handleImage=(e)=>{
 
 
    <div className='nav'>
+    <ArrowBackIcon fontSize='medium' style={{ color: 'white' }} onClick={()=>navigate('/')}> </ArrowBackIcon>
    <IconButton>
       <Avatar  alt="A Sharp" />
   
       </IconButton>
-      <IconButton>
-       {chatWith.username}
-      </IconButton>
+      <span className='ChatWith'> {chatWith.username}</span>
 
-      <IconButton        
+      <IconButton 
+      style={{ color: 'white' }}       
         aria-label="more"
+        className='optionDot'   
         aria-controls={open ? 'long-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
@@ -301,9 +304,7 @@ const handleImage=(e)=>{
         autoComplete='off'
       />
     </form>
-  
-       {/* <input id="input" onChange={e=>setInput(e.target.value)} value={input} autoComplete="off" />
-       <button onClick={handleSubmit}>Send</button> */}
+
    </div>
   
    </div>

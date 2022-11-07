@@ -146,11 +146,12 @@ const StartChat = () => {
       <Avatar  alt="A Sharp" />
   
       </IconButton>
-      <IconButton>
-       {user.username}
-      </IconButton>
+     
+       <span className='username'> {user.username}</span>
+    
 
-      <IconButton        
+      <IconButton   
+        className='optionDot'     
         aria-label="more"
         aria-controls={open ? 'long-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
@@ -199,7 +200,8 @@ const StartChat = () => {
            <ListItemAvatar>
            <Avatar alt={user.createdBy||user.createdWith} src="#" />
            </ListItemAvatar>
-           <ListItemText
+           <ListItemText 
+           className='ListUsername'
           primary={user.createdBy||user.createdWith}
           secondary={
             <React.Fragment>
@@ -210,7 +212,7 @@ const StartChat = () => {
                 color="text.primary"
                 
               >
-               ......
+               ........
               </Typography>
              
             </React.Fragment>
@@ -237,6 +239,7 @@ const StartChat = () => {
            <Avatar alt={"S"} src="#" />
            </ListItemAvatar>
            <ListItemText
+           className='ListUsername'
           primary={"Start Chat"}
           secondary={
             <React.Fragment>
@@ -295,6 +298,7 @@ const StartChat = () => {
  <Avatar alt={user.username} src="#" />
  </ListItemAvatar>
  <ListItemText
+ className='ListUsername'
 primary={user.username}
 secondary={
   <React.Fragment>
