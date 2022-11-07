@@ -16,20 +16,6 @@ const Login = () => {
   const [err,SetErr]=useState("");
   const [isLoading,setIsloading]=useState(false)
   useEffect(() => {
-      //   fetch("http://localhost:8000/user")
-      //   .then(function(response){
-      //     console.log(response)
-      //     return response.json();
-      //  })
-      //   .then(function(data){
-      //     console.log(data);
-      //     setFetchData(data);
-      //  })
-      //   .catch(function(err){
-       
-      //     console.log(err);
-      //  });
-
       fetch("http://localhost:8000/user")
       .then(function(response){
         console.log(response)
@@ -38,43 +24,14 @@ const Login = () => {
          .then(function(data){
            console.log(data);
            setFetchData(data);
-          //  dispatch(
-          //   allUser(data)
-          //   ) 
+    
         })
          .catch(function(err){
         
            console.log(err);
         });
 
-        // onEnter()
-        // return () => {
-        //   onleave()
-        // }
       }, [])
-
-
-
-      const onEnter=()=>{
-        console.log("enter")
-        fetch("http://localhost:8000/user")
-        .then(function(response){
-         console.log(response)
-          return response.json();
-       })
-        .then(function(data){
-          console.log(data);
-          setFetchData(data);
-       })
-        .catch(function(err){
-       
-          console.log(err);
-       });
-      }
-
-      const onleave=()=>{
-        console.log("Leave")
-      }
 
       const handleSubmit=async function(e){
         e.preventDefault();
@@ -88,7 +45,7 @@ const Login = () => {
          SetErr("Failed to Login")
          setIsloading(false)
        }
-     
+
        setTimeout(() => {
         SetErr("")
        }, 2000);

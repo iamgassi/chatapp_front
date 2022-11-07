@@ -2,7 +2,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, TextField } from '@mui/material';
+import { Avatar, Button, TextField } from '@mui/material';
 import React, {  useEffect, useState } from 'react'
 import axios from 'axios'
 import io from 'socket.io-client'
@@ -46,11 +46,17 @@ const Chat = () => {
     socket=io('http://localhost:8000');
     socket.on('message',(data,sendBy)=>{
       console.log('FROM SOCKET',data,sendBy)  
-      setMessages(messages=>[...messages,<div className={userId===sendBy?"onTime":"prevMsg"} key={Date.now()}>{data}</div>])
+      setMessages(messages=>[...messages,<div className={userId===sendBy?"onTime":"prevMsg"} key={Date.now()}>{data}
+      <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
+      </div>])
     })
     socket.on('image',(img,sendBy)=>{
       console.log('Image from SOCKET',img)  
-      setMessages(messages=>[...messages,<img className={userId===sendBy?"onTime":"prevMsg"} src={img} key={Date.now()}/>])
+      setMessages(messages=>[...messages,
+      <div>
+        <img className={userId===sendBy?"onTime":"prevMsg"} src={img} key={Date.now()}/> 
+        <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
+        </div>])
     })
   },[])
   
@@ -271,8 +277,10 @@ const handleImage=(e)=>{
         
           {(prevMsg.map((el,index)=>{return (
             <div key={index} className={self.username===el.createdBy?"onTime":"prevMsg"}> 
-              <div >{el.content|| <img  src={el.image}/>}</div>
-              {/* <img  src={el.image}/> */}
+              <div >{el.content|| <img  src={el.image}/>}
+              <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
+              </div>
+
             </div>
           )}))}
           {messages.length?messages:null}
@@ -280,21 +288,24 @@ const handleImage=(e)=>{
    </div>
 
    <div className='sendBox'>
-    <form onSubmit={handleImage}>
+    <form className='send1' onSubmit={handleImage}>
+
 
    <FileBase64
     type="file"
     multiple={false}
     onDone={({base64})=>setImage(base64)}
+    required
     />
-    <SendIcon onClick={handleImage}></SendIcon>
+  
+    <Button variant="contained" color="success"  type='submit' >Send</Button>
     </form>
 
-     <form id="form" onSubmit={handleSubmit}>
+     <form className='send2' onSubmit={handleSubmit}>
         <TextField
         hiddenLabel
         id="filled-hidden-label-normal"
-        placeholder='Send Message'
+        placeholder='Type A Message'
         variant="filled"
         size="small"
         fullWidth 
