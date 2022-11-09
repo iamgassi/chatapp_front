@@ -7,7 +7,8 @@ import React, {  useEffect, useState } from 'react'
 import axios from 'axios'
 import io from 'socket.io-client'
 import FileBase64 from 'react-file-base64';
-import SendIcon from '@mui/icons-material/Send';
+import ScrollToBottom from 'react-scroll-to-bottom';
+import ReactEmoji from 'react-emoji';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import Cookies from 'universal-cookie'; 
@@ -46,7 +47,7 @@ const Chat = () => {
     socket=io('http://localhost:8000');
     socket.on('message',(data,sendBy)=>{
       console.log('FROM SOCKET',data,sendBy)  
-      setMessages(messages=>[...messages,<div className={userId===sendBy?"onTime":"prevMsg"} key={Date.now()}>{data}
+      setMessages(messages=>[...messages,<div className={userId===sendBy?"onTime":"prevMsg"} key={Date.now()}>{ReactEmoji.emojify(data)}
       <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
       </div>])
     })
@@ -60,11 +61,16 @@ const Chat = () => {
 
         </div>])
     })
+    return ()=>{
+      socket.disconnect();
+      socket.off()
+    }
   },[])
   
   const [messages,setMessages]=useState([])
   const [chatWith, setChatWith] = useState([])
   const [self, setSelf] = useState([])
+  const [selectedVideoFile, setSelectedVideoFile] = useState(null)
   const navigate = useNavigate();
 
   const [anchorEl, setAnhchorEl] = useState(null);
@@ -134,6 +140,7 @@ const Chat = () => {
    const handleSubmit=async(e)=>{
     e.preventDefault();
     setEnter(true)
+    if (!input || input.trimStart()=='') return
     if (input) {
      
      socket.emit('chat message',input,userId);
@@ -174,7 +181,7 @@ const Chat = () => {
 const handleImage=(e)=>{
   e.preventDefault()
   if (image) { 
-    setImage("")
+
     console.log("Inside Image")
     socket.emit('chat image', image,userId);
     
@@ -206,8 +213,9 @@ const handleImage=(e)=>{
     catch (error) {
      console.log(error)
     }
-     }
-}
+  }
+    setImage("")
+      }
   
 
   const optionDot = (event) => {
@@ -220,8 +228,49 @@ const handleImage=(e)=>{
   
     console.log("handleClose ()")
   };
-  console.log("object",self.username)
-  console.log("prev",prevMsg.createdBy)
+
+  const handleVideo=(e)=>{
+    console.log("Onchange fired")
+    setSelectedVideoFile(e.target.files[0])
+    console.log(e.target.files[0]);
+  }
+ 
+const handleVideoSubmit=(e)=>{
+  e.preventDefault();
+  const formData = new FormData();
+  console.log(selectedVideoFile)
+  formData.append('video', selectedVideoFile);
+  // console.log(formData)
+  const u2u=
+  {
+    sender:self,
+    reciever:chatWith
+  }
+  // formData.append('user2user',JSON.stringify(u2u))
+  // formData.append('user2user',u2u)
+
+
+  //  obj.append(formData)
+
+   try {
+    // console.log(image) 
+    fetch("http://localhost:8000/uploadvideo",{
+     method:"POST",
+     body:formData,
+    
+   })
+  } 
+  catch (error) {
+   console.log(error)
+  }
+
+    // fetch('http://localhost:8000/uploadvideo', {
+    //     method: 'POST',
+    //     body: formData,
+    // });
+
+
+  }
   return (
 
     <div className="app">
@@ -274,12 +323,11 @@ const handleImage=(e)=>{
       </Menu>
    </div>
 
-   <div className='content'>
+     <ScrollToBottom className='content'>
    <div id="messages">
-        
           {(prevMsg.map((el,index)=>{return (
             <div key={index} className={self.username===el.createdBy?"onTime":"prevMsg"}> 
-              <div >{el.content|| <img  src={el.image}/>}
+              <div >{ReactEmoji.emojify(el.content)|| <img  src={el.image}/>}
               <span className='rightTime'> {new Date(`${el.created_at}`).toLocaleTimeString("en-US")} </span>
               </div>
 
@@ -287,21 +335,30 @@ const handleImage=(e)=>{
           )}))}
           {messages.length?messages:null}
         </div>
-   </div>
+          </ScrollToBottom>   
+
 
    <div className='sendBox'>
-    <form className='send1' onSubmit={handleImage}>
 
-
-   <FileBase64
+    <div className='send1'>
+   <form className='sendVideo' onSubmit={handleVideoSubmit}>
+              
+   <input type="file" name="file" onChange={handleVideo} />
+   <Button variant="contained" color="success"  type='submit' >Send Video</Button>
+    
+   </form >
+                
+    <form  onSubmit={handleImage}>
+    <FileBase64
     type="file"
     multiple={false}
     onDone={({base64})=>setImage(base64)}
     required
     />
-  
-    <Button variant="contained" color="success"  type='submit' >Send</Button>
+    <Button variant="contained" color="success"  type='submit' >Send Image</Button>
     </form>
+
+    </div>
 
      <form className='send2' onSubmit={handleSubmit}>
         <TextField
