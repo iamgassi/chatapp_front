@@ -56,6 +56,8 @@ const Chat = () => {
       <div>
         <img className={userId===sendBy?"onTime":"prevMsg"} src={img} key={Date.now()}/> 
         <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
+      <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
+
         </div>])
     })
   },[])
@@ -278,7 +280,7 @@ const handleImage=(e)=>{
           {(prevMsg.map((el,index)=>{return (
             <div key={index} className={self.username===el.createdBy?"onTime":"prevMsg"}> 
               <div >{el.content|| <img  src={el.image}/>}
-              <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
+              <span className='rightTime'> {new Date(`${el.created_at}`).toLocaleTimeString("en-US")} </span>
               </div>
 
             </div>
