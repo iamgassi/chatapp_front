@@ -36,7 +36,7 @@ const Chat = () => {
   const [alert,setAlert]=useState(false)
   const [alertMsg,setAlertMsg]=useState('')
 
-  console.log(searchParams.get('id')); // 'id'
+  // console.log(searchParams.get('id')); // 'id'
   const recieverId=searchParams.get('id')
   // const ENDPOINT='https://app-reactchatapp.herokuapp.com'
   const ENDPOINT='http://localhost:8000'
@@ -45,7 +45,6 @@ const Chat = () => {
   useEffect(function(){
     
     if(recieverId){
-      console.log(recieverId)
       onLoad()
       getPreviousChat(recieverId)
     }
@@ -54,7 +53,7 @@ const Chat = () => {
   useEffect(()=>{
     socket=io(ENDPOINT);
     socket.on('message',(data,sendBy)=>{
-      console.log('FROM SOCKET',data,sendBy)  
+      // console.log('FROM SOCKET',data,sendBy)  
       setMessages(messages=>[...messages,
       <div className={userId===sendBy?"onTime":"prevMsg"} key={Date.now()}>
       {data.includes("https://you"||"https://www.youtube.com")?(
@@ -70,7 +69,7 @@ const Chat = () => {
       </div>])
     })
     socket.on('image',(img,sendBy)=>{
-      console.log('Image from SOCKET',img) 
+      // console.log('Image from SOCKET',img) 
       setAlert(true) 
       setAlertMsg(`Image is successfully ${userId===sendBy?"Send":"Recieved"} — check it out!`)
       setMessages(messages=>[...messages,
@@ -113,26 +112,20 @@ const Chat = () => {
     const response=await axios.get(`${ENDPOINT}/user/${sender_id}`)
     
     const all_ids=response.data.chat_with
-    console.log("all IDS",all_ids)
+    // console.log("all IDS",all_ids)
     
     const found=all_ids.find(item=>{return (item.sender_id===reciever_id)||(item.reciever_id===reciever_id)})
-    console.log("Found-------",found)
+    // console.log("Found-------",found)
       if(!found) 
       {
-        // let temp="Temp_ID"
         socket.emit('create')
-        console.log("!found")
         return
       }
-      console.log("found")
+
 
       var chat_ID=found.chatId
 
-      socket.emit('create',chat_ID)        
-      // console.log(chat_ID) 
-      // getChatId(chat_ID)
-      console.log( chat_ID)
-      
+      socket.emit('create',chat_ID)              
       const {data}=await axios.get(`${ENDPOINT}/getMessages/${chat_ID}`)
       if(data.length)
       {
@@ -146,8 +139,6 @@ const Chat = () => {
     }
 
   const onLoad=async()=>{
-
-    console.log(recieverId)
     const response1=await axios.get(`${ENDPOINT}/user/${recieverId}`)
     const result1=response1.data   
     setChatWith(result1)
@@ -166,23 +157,20 @@ const Chat = () => {
      
      socket.emit('chat message',input,userId);
      
-     console.log("Chat message is send")
+    //  console.log("Chat message is send")
      const u2u=
      {
        sender:self,
        reciever:chatWith
      }
-
-     console.log(chatWith)
-
-    
+   
      let obj={
       user2user:u2u,
       msg:input
       
     }
      try {
-       console.log(input) 
+    
        fetch(`${ENDPOINT}/message`,{
         mode: 'cors',
         method:"POST",
@@ -202,19 +190,13 @@ const Chat = () => {
 const handleImage=(e)=>{
   e.preventDefault()
   if (image) { 
-
-    console.log("Inside Image")
     socket.emit('chat image', image,userId);
-    
-    console.log("chat image is send")
+    // console.log("chat image is send")
     const u2u=
     {
       sender:self,
       reciever:chatWith
     }
-
-    console.log(chatWith)
-
    
     let obj={
      user2user:u2u,
@@ -222,7 +204,7 @@ const handleImage=(e)=>{
      
    }
     try {
-      // console.log(image) 
+ 
       fetch(`${ENDPOINT}/image`,{
        mode:'cors',
        method:"POST",
@@ -245,22 +227,19 @@ const handleImage=(e)=>{
 
   };
   const handleClose = (option) => {
-    setAnhchorEl(null);
-    console.log(option)
-  
-    console.log("handleClose ()")
+    setAnhchorEl(null);  
   };
 
   const handleVideo=(e)=>{
-    console.log("Onchange fired")
+  
     setSelectedVideoFile(e.target.files[0])
-    console.log(e.target.files[0]);
+    // console.log(e.target.files[0]);
   }
  
 const handleVideoSubmit=(e)=>{
   e.preventDefault();
   const formData = new FormData();
-  console.log(selectedVideoFile)
+
   formData.append('video', selectedVideoFile);
   // console.log(formData)
   // const u2u=
@@ -270,7 +249,7 @@ const handleVideoSubmit=(e)=>{
   // }
   const sender=JSON.stringify(self)
   const reciever=JSON.stringify(chatWith)
-  console.log(self)
+ 
   formData.append('sender',sender)
   formData.append('reciever',reciever)
 

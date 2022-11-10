@@ -55,7 +55,7 @@ const StartChat = () => {
 
   const handleClickOpen = (scrollType) => () => {
     setOpen1(true);
-    console.log("Called")
+
     setScroll(scrollType);
   };
 
@@ -87,8 +87,6 @@ const StartChat = () => {
     const result1=response1.data
      setallUsers(result1)
 
-     console.log(userId)
-
    const response2=await axios.get(`${ENDPOINT}/user/${userId}`)
     const result2=response2.data
         setuser(result2)
@@ -101,7 +99,6 @@ const StartChat = () => {
   };
   const handleClose = (option) => {
     setAnchorEl(null);
-    console.log(option)
    if(option==="Logout")
    {
      cookies.remove("loggedIn",{ path: '/'});
@@ -111,26 +108,17 @@ const StartChat = () => {
      else if(option==='New Chat')
    {
      handleClickOpen('paper')()
-     console.log("oihsadf")
    }
-    console.log("handleClose ()")
+    
   };
 
-  // const handleList=(id)=>{
-  
-  //   console.log(id,"handleList")
-  //   // cookies.set('recieverId', id, { path: '/', maxAge: 30*60000 });
-  //   console.log("handleList",id) 
-  // }
 
   if (!allUsers && !user) return
   const filteredUser=allUsers.filter(el=>{return el._id!==user._id})
   let recentChat=false
   if(user.chat_with)
   {
-    console.log(user)
    recentChat=user.chat_with
-    console.log(recentChat)
   }
   
   return (

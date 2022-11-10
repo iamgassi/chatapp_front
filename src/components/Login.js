@@ -22,16 +22,15 @@ const Login = () => {
    
       fetch(`${ENDPOINT}/user`)
       .then(function(response){
-        console.log(response)
+        // console.log(response)
         return response.json();
         })
          .then(function(data){
-           console.log(data);
+          //  console.log(data);
            setFetchData(data);
     
         })
          .catch(function(err){
-        
            console.log(err);
         });
 
@@ -65,13 +64,12 @@ const Login = () => {
          for(let i=0;i<fetchData.length;i++)
         {
         let serverUsername=fetchData[i].username
-         console.log(serverUsername)
-         console.log(username,password)
+
          if(username===serverUsername )
                {
                  if(fetchData[i].password===password)
                        {
-                         console.log("success",fetchData[i])
+                        
                          SetErr("Login Success")
                          cookies.set('loggedIn', true, { path: '/', maxAge: 30*60000 });
                          cookies.set('userId', fetchData[i]._id, { path: '/', maxAge: 30*60000 });
