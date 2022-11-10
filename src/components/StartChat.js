@@ -9,7 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 
 import Typography from '@mui/material/Typography';
-import Chat from './Chat';
+
 
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
@@ -17,7 +17,6 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import img from './welcome-placeholder.jpeg'
-import bg from './whatsapp__default.png'
 import Cookies from 'universal-cookie';
 import {Link, useNavigate} from 'react-router-dom'
 
@@ -41,9 +40,10 @@ const ITEM_HEIGHT = 48;
 
 const StartChat = () => {
 
+  // const ENDPOINT='https://app-reactchatapp.herokuapp.com'
+  const ENDPOINT='http://localhost:8000'
   const [allUsers, setallUsers] = useState([])
   const [user, setuser] = useState([])
-  const [Id, setId] = useState('')
   const userId=cookies.get("userId")
   
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -77,20 +77,19 @@ const StartChat = () => {
 
   useEffect(function(){
     onLoad()
-    // chatWith()
-
+ 
    },[]);
 
   
   const onLoad=async()=>{
    
-    const response1=await axios.get("http://localhost:8000/user")
+    const response1=await axios.get(`${ENDPOINT}/user`)
     const result1=response1.data
      setallUsers(result1)
 
      console.log(userId)
 
-   const response2=await axios.get(`http://localhost:8000/user/${userId}`)
+   const response2=await axios.get(`${ENDPOINT}/user/${userId}`)
     const result2=response2.data
         setuser(result2)
 
@@ -107,7 +106,6 @@ const StartChat = () => {
    {
      cookies.remove("loggedIn",{ path: '/'});
      cookies.remove("userId",{ path: '/'});
-    //  cookies.remove("recieverId",{ path: '/'});
      navigate('/');
    }
      else if(option==='New Chat')
@@ -118,13 +116,12 @@ const StartChat = () => {
     console.log("handleClose ()")
   };
 
-  const handleList=(id)=>{
+  // const handleList=(id)=>{
   
-    console.log(id,"handleList")
-    // cookies.set('recieverId', id, { path: '/', maxAge: 30*60000 });
-    console.log("handleList",id)
-    setId(id)    
-  }
+  //   console.log(id,"handleList")
+  //   // cookies.set('recieverId', id, { path: '/', maxAge: 30*60000 });
+  //   console.log("handleList",id) 
+  // }
 
   if (!allUsers && !user) return
   const filteredUser=allUsers.filter(el=>{return el._id!==user._id})
@@ -219,7 +216,7 @@ const StartChat = () => {
              
             </React.Fragment>
           }
-          onClick={()=>handleList(user.sender_id ||  user.reciever_id)}
+          // onClick={()=>handleList(user.sender_id ||  user.reciever_id)}
           
           />
       </ListItem>
@@ -270,7 +267,7 @@ const StartChat = () => {
 
       <div>
       <Dialog
-      fullWidth='xs'
+      fullWidth={true}
         open={open1}
         onClose={handleClose}
         scroll={scroll}
@@ -292,7 +289,7 @@ const StartChat = () => {
     {
       return (
         <div  key={user._id}>
-  {/* <Link to="/Chat" >       */}
+  
   <Link to={`/chat?id=${user._id}`}>       
 
  <ListItem alignItems="flex-start" style={{cursor:"pointer"}}>
@@ -316,7 +313,6 @@ secondary={
    
   </React.Fragment>
 }
-onClick={()=>handleList(user._id)}
 
 />
 </ListItem>

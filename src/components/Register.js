@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import { Input,Button } from '@mui/material';
 import {Link} from 'react-router-dom'
 
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 const Register = () => {
+  // const ENDPOINT='https://app-reactchatapp.herokuapp.com'
+  const ENDPOINT='http://localhost:8000'
+
   const [password,setPassword]=useState("")
   const [name,setName]=useState("")
   const [repeatPass,setRepeatPass]=useState("")
@@ -40,7 +44,7 @@ const Register = () => {
        }
        return(
   
-          fetch('http://localhost:8000/user', {
+          fetch(`${ENDPOINT}/user`, {
           method: 'POST', // or 'PUT'
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +70,7 @@ const Register = () => {
      <div className='start'>
             
             <div className='main'>
-             <h3>Register Page</h3>
+             <h3 className='heading'><VpnKeyIcon  fontSize='large'></VpnKeyIcon>Register Page</h3>
              <form onSubmit={(e)=>handleSubmit(e)}>
 
              <Input placeholder='Username' 
@@ -93,9 +97,9 @@ const Register = () => {
              /><br></br><br></br>
 
              <span>
-             <Button sx={{mr: 2}} variant="contained" type='submit'>Register</Button>
+             <Button sx={{mr: 2}} variant="contained" color="success" type='submit'>Register</Button>
              <Link to="/">
-             <Button variant="outlined" >LogIn</Button>
+             <Button color="success" variant="outlined"  >LogIn</Button>
              </Link>
              </span>
              </form>

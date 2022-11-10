@@ -68,3 +68,13 @@ a {
   
 }
 
+.heading{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color:rgb(18, 153, 119);
+  font-size: larger;
+  text-decoration:underline;
+  font-weight: 700  ;
+}
+

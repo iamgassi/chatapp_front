@@ -2,21 +2,25 @@ import React, { useEffect, useState } from 'react'
 import { Button, Input } from '@mui/material';
 import {Link} from 'react-router-dom'
 import LoadingButton from '@mui/lab/LoadingButton';
+import LoginIcon from '@mui/icons-material/Login';
 
 import Cookies from 'universal-cookie'
 import StartChat from './StartChat';
-import { useNavigate } from 'react-router-dom';
 
 const cookies=new Cookies();
 const Login = () => {
-  const navigate = useNavigate();
+  // const ENDPOINT='https://app-reactchatapp.herokuapp.com'
+  const ENDPOINT='http://localhost:8000'
+
+
   const [username,setUsername]=useState("")
   const [password,setPassword]=useState("")
   const [fetchData,setFetchData]=useState({});
   const [err,SetErr]=useState("");
   const [isLoading,setIsloading]=useState(false)
   useEffect(() => {
-      fetch("http://localhost:8000/user")
+   
+      fetch(`${ENDPOINT}/user`)
       .then(function(response){
         console.log(response)
         return response.json();
@@ -100,7 +104,7 @@ const Login = () => {
              
                  <div className='start'>
              <div className='main'>
-             <h3>Login Page</h3>
+             <h3 className='heading'><LoginIcon  fontSize='large'></LoginIcon>Login Page </h3>
              <form onSubmit={(e)=>handleSubmit(e)}>
             
              <Input placeholder='Username'
@@ -124,10 +128,11 @@ const Login = () => {
                sx={{mr: 1}}
                type='submit'
                variant="contained"
+               color="success"
                >LogIn</LoadingButton>
 
              <Link to="/register">
-             <Button variant="outlined" >Register</Button>
+             <Button variant="outlined" color="success" >Register</Button>
              </Link>
              </span>
              </form>

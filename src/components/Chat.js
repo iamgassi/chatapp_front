@@ -2,7 +2,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, Button, TextField } from '@mui/material';
+import { Alert, Avatar, Button, TextField } from '@mui/material';
 import React, {  useEffect, useState } from 'react'
 import axios from 'axios'
 import io from 'socket.io-client'
@@ -10,6 +10,8 @@ import FileBase64 from 'react-file-base64';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import ReactEmoji from 'react-emoji';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ReactPlayer from 'react-player'
+import CheckIcon from '@mui/icons-material/Check';
 
 import Cookies from 'universal-cookie'; 
 import './Chat.css'
@@ -31,8 +33,14 @@ let socket
 
 const Chat = () => {
   const [searchParams] = useSearchParams();
+  const [alert,setAlert]=useState(false)
+  const [alertMsg,setAlertMsg]=useState('')
+
   console.log(searchParams.get('id')); // 'id'
   const recieverId=searchParams.get('id')
+  // const ENDPOINT='https://app-reactchatapp.herokuapp.com'
+  const ENDPOINT='http://localhost:8000'
+
 
   useEffect(function(){
     
@@ -44,22 +52,37 @@ const Chat = () => {
   },[recieverId]);
   
   useEffect(()=>{
-    socket=io('http://localhost:8000');
+    socket=io(ENDPOINT);
     socket.on('message',(data,sendBy)=>{
       console.log('FROM SOCKET',data,sendBy)  
-      setMessages(messages=>[...messages,<div className={userId===sendBy?"onTime":"prevMsg"} key={Date.now()}>{ReactEmoji.emojify(data)}
+      setMessages(messages=>[...messages,
+      <div className={userId===sendBy?"onTime":"prevMsg"} key={Date.now()}>
+      {data.includes("https://you"||"https://www.youtube.com")?(
+       setAlert(true),
+       setAlertMsg(`Youtube link ${userId===sendBy?"Send":"Recieved"} successfully — check it out!`),
+       setTimeout(() => {
+        setAlert(false)
+       }, 2000) ,
+       <ReactPlayer url={data} /> 
+       
+      ):ReactEmoji.emojify(data)} 
       <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
       </div>])
     })
     socket.on('image',(img,sendBy)=>{
-      console.log('Image from SOCKET',img)  
+      console.log('Image from SOCKET',img) 
+      setAlert(true) 
+      setAlertMsg(`Image is successfully ${userId===sendBy?"Send":"Recieved"} — check it out!`)
       setMessages(messages=>[...messages,
-      <div>
-        <img className={userId===sendBy?"onTime":"prevMsg"} src={img} key={Date.now()}/> 
-        <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
+      <div className={userId===sendBy?"onTime":"prevMsg"}>
+       <div> <img  src={img} alt='#' key={Date.now()}/> </div>
       <span className='rightTime'> {new Date().toLocaleTimeString('en-US')} </span>
+        </div>])  
+        setTimeout(() => {
+        setAlert(false)
+       }, 2000);
 
-        </div>])
+
     })
     return ()=>{
       socket.disconnect();
@@ -69,7 +92,7 @@ const Chat = () => {
   
   const [messages,setMessages]=useState([])
   const [chatWith, setChatWith] = useState([])
-  const [self, setSelf] = useState([])
+  const [self, setSelf] = useState()
   const [selectedVideoFile, setSelectedVideoFile] = useState(null)
   const navigate = useNavigate();
 
@@ -80,7 +103,6 @@ const Chat = () => {
   const [image,setImage]=useState('');
 
   const [prevMsg,setPrevMsg]=useState([])
-  const [enter, setEnter] = useState(false)
   const userId=cookies.get("userId")
   // const recieverId=cookies.get("recieverId")
 
@@ -88,7 +110,7 @@ const Chat = () => {
     const reciever_id=recieverId
     const sender_id=userId
      
-    const response=await axios.get(`http://localhost:8000/user/${sender_id}`)
+    const response=await axios.get(`${ENDPOINT}/user/${sender_id}`)
     
     const all_ids=response.data.chat_with
     console.log("all IDS",all_ids)
@@ -111,12 +133,11 @@ const Chat = () => {
       // getChatId(chat_ID)
       console.log( chat_ID)
       
-      const {data}=await axios.get(`http://localhost:8000/getMessages/${chat_ID}`)
+      const {data}=await axios.get(`${ENDPOINT}/getMessages/${chat_ID}`)
       if(data.length)
       {
         for(let item of data)
         {
-          console.log(item)
           setPrevMsg(prev=>[...prev,item]) 
         }
         
@@ -127,11 +148,11 @@ const Chat = () => {
   const onLoad=async()=>{
 
     console.log(recieverId)
-    const response1=await axios.get(`http://localhost:8000/user/${recieverId}`)
+    const response1=await axios.get(`${ENDPOINT}/user/${recieverId}`)
     const result1=response1.data   
     setChatWith(result1)
  
-    const response2  =await axios.get(`http://localhost:8000/user/${userId}`)
+    const response2  =await axios.get(`${ENDPOINT}/user/${userId}`)
     const result2=response2.data
         setSelf(result2)
       
@@ -139,8 +160,8 @@ const Chat = () => {
 
    const handleSubmit=async(e)=>{
     e.preventDefault();
-    setEnter(true)
-    if (!input || input.trimStart()=='') return
+    
+    if (!input || input.trimStart()==='') return
     if (input) {
      
      socket.emit('chat message',input,userId);
@@ -162,7 +183,8 @@ const Chat = () => {
     }
      try {
        console.log(input) 
-       fetch("http://localhost:8000/message",{
+       fetch(`${ENDPOINT}/message`,{
+        mode: 'cors',
         method:"POST",
         body:JSON.stringify(obj),
         headers:{
@@ -175,7 +197,6 @@ const Chat = () => {
 
       }
     setInput("")
-    setEnter(false)
 }
 
 const handleImage=(e)=>{
@@ -202,7 +223,8 @@ const handleImage=(e)=>{
    }
     try {
       // console.log(image) 
-      fetch("http://localhost:8000/image",{
+      fetch(`${ENDPOINT}/image`,{
+       mode:'cors',
        method:"POST",
        body:JSON.stringify(obj),
        headers:{
@@ -241,12 +263,17 @@ const handleVideoSubmit=(e)=>{
   console.log(selectedVideoFile)
   formData.append('video', selectedVideoFile);
   // console.log(formData)
-  const u2u=
-  {
-    sender:self,
-    reciever:chatWith
-  }
-  // formData.append('user2user',JSON.stringify(u2u))
+  // const u2u=
+  // {
+  //   sender:self,
+  //   reciever:chatWith
+  // }
+  const sender=JSON.stringify(self)
+  const reciever=JSON.stringify(chatWith)
+  console.log(self)
+  formData.append('sender',sender)
+  formData.append('reciever',reciever)
+
   // formData.append('user2user',u2u)
 
 
@@ -254,28 +281,24 @@ const handleVideoSubmit=(e)=>{
 
    try {
     // console.log(image) 
-    fetch("http://localhost:8000/uploadvideo",{
+    fetch(`${ENDPOINT}/uploadvideo`,{
+    mode:'cors',
      method:"POST",
      body:formData,
-    
    })
   } 
   catch (error) {
    console.log(error)
   }
 
-    // fetch('http://localhost:8000/uploadvideo', {
-    //     method: 'POST',
-    //     body: formData,
-    // });
-
-
   }
   return (
 
     <div className="app">
+      
     <div className="app__top"></div>
     <div className="container" style={{backgroundImage:`url(${bg}`, backgroundPosition: "center",    backgroundRepeat: "no-repeat",backgroundSize: "cover"}}>
+  
 
 
 
@@ -322,31 +345,36 @@ const handleVideoSubmit=(e)=>{
 
       </Menu>
    </div>
-
+    
      <ScrollToBottom className='content'>
+
    <div id="messages">
           {(prevMsg.map((el,index)=>{return (
-            <div key={index} className={self.username===el.createdBy?"onTime":"prevMsg"}> 
-              <div >{ReactEmoji.emojify(el.content)|| <img  src={el.image}/>}
+              <div key={index} className={self.username===el.createdBy?"onTime":"prevMsg"} >
+                {el.link?<ReactPlayer  url={el.link} />:(ReactEmoji.emojify(el.content)|| <div><img  alt='#' src={el.image}/></div>)}
               <span className='rightTime'> {new Date(`${el.created_at}`).toLocaleTimeString("en-US")} </span>
-              </div>
-
             </div>
           )}))}
           {messages.length?messages:null}
         </div>
           </ScrollToBottom>   
 
+          <div className='alert'>
+       {alert?(
+        <Alert icon={<CheckIcon fontSize="inherit" />}  severity="success">{alertMsg}</Alert>
+      ):null}
+      </div>
+
 
    <div className='sendBox'>
 
     <div className='send1'>
-   <form className='sendVideo' onSubmit={handleVideoSubmit}>
+   {/* <form className='sendVideo' onSubmit={handleVideoSubmit}>
               
    <input type="file" name="file" onChange={handleVideo} />
    <Button variant="contained" color="success"  type='submit' >Send Video</Button>
     
-   </form >
+   </form > */}
                 
     <form  onSubmit={handleImage}>
     <FileBase64

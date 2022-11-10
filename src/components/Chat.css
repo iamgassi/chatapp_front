@@ -47,22 +47,20 @@
 }
 
 .prevMsg{
+    max-width: fit-content;
     font-size: 15px;
     background: #fff;
-    border-radius: 0px 5px 5px 5px;
     float: left;
     margin: 2px;
     padding: 0.5rem;
     clear: both;
     border: 2px solid rgba(176, 178, 178, 0.745);
-    /* border: outset; */
-    /* border-radius:10px; */
-    border-right-width: thick;
-
-    
+    border-radius: 5px 5px 10px 5px;
+    border-right-width: thick;   
 }
 
 .onTime{
+    max-width: fit-content;
     font-size: 15px;
     margin: 2px;
     border: 2px solid rgba(131, 194, 161, 0.812);
@@ -70,8 +68,9 @@
     padding:.5rem;
     clear: both;
     float: right;
+    border-radius:10px;
 
-    border-radius: 0px 5px 5px 5px;
+    border-radius: 0px 5px 5px 10px;
     border-left-width: thick;
 }
 
@@ -130,4 +129,13 @@
 .send1,input{
     color:gray;
     font-size:10px
+}
+
+.alert
+{
+    position: absolute;
+    left:5rem;
+    top: 5rem;
+   
+    
 }
