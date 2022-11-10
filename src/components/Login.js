@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Input } from '@mui/material';
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import LoadingButton from '@mui/lab/LoadingButton';
 import LoginIcon from '@mui/icons-material/Login';
 
@@ -11,7 +11,7 @@ const cookies=new Cookies();
 const Login = () => {
   // const ENDPOINT='https://app-reactchatapp.herokuapp.com'
   const ENDPOINT='http://localhost:8000'
-
+  const navigate = useNavigate();
 
   const [username,setUsername]=useState("")
   const [password,setPassword]=useState("")
@@ -22,7 +22,6 @@ const Login = () => {
    
       fetch(`${ENDPOINT}/user`)
       .then(function(response){
-        // console.log(response)
         return response.json();
         })
          .then(function(data){
@@ -31,6 +30,7 @@ const Login = () => {
     
         })
          .catch(function(err){
+        
            console.log(err);
         });
 
@@ -64,12 +64,12 @@ const Login = () => {
          for(let i=0;i<fetchData.length;i++)
         {
         let serverUsername=fetchData[i].username
-
+   
          if(username===serverUsername )
                {
                  if(fetchData[i].password===password)
                        {
-                        
+                    
                          SetErr("Login Success")
                          cookies.set('loggedIn', true, { path: '/', maxAge: 30*60000 });
                          cookies.set('userId', fetchData[i]._id, { path: '/', maxAge: 30*60000 });

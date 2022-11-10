@@ -139,3 +139,45 @@
    
     
 }
+
+/* input {
+    margin-top: 1rem;
+}
+
+input::file-selector-button {
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    background-color: green;
+    padding: 0.5em;
+    border: thin solid grey;
+    border-radius: 3px;
+} */
+
+input[type='file']{
+    position: absolute;
+    top: -99999px;
+    left: -999999px;
+}
+
+label{
+    align-items: center;
+    background: green;
+    border-radius: 23px;
+    height: 47px;
+    width: 100px;
+    display: flex;
+    color: white;
+    justify-content: center;
+    cursor: pointer;
+    transition: all ease-out 200ms;
+
+}
+
+label:not(.chosen):hover{
+    background-color: rgb(12, 155, 62);
+    box-shadow: 0 0 5px 0 rgb(3, 110, 3);
+}
+
+label.chosen{
+    background-color: grey;
+}

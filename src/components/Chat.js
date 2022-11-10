@@ -2,7 +2,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Alert, Avatar, Button, TextField } from '@mui/material';
+import { Alert, Avatar, Button, Link, TextField } from '@mui/material';
 import React, {  useEffect, useState } from 'react'
 import axios from 'axios'
 import io from 'socket.io-client'
@@ -12,6 +12,7 @@ import ReactEmoji from 'react-emoji';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ReactPlayer from 'react-player'
 import CheckIcon from '@mui/icons-material/Check';
+import ImageIcon from '@mui/icons-material/Image';
 
 import Cookies from 'universal-cookie'; 
 import './Chat.css'
@@ -35,9 +36,8 @@ const Chat = () => {
   const [searchParams] = useSearchParams();
   const [alert,setAlert]=useState(false)
   const [alertMsg,setAlertMsg]=useState('')
-
-  // console.log(searchParams.get('id')); // 'id'
   const recieverId=searchParams.get('id')
+  const [selectedFile, setSelectedFile] = useState(null);
   // const ENDPOINT='https://app-reactchatapp.herokuapp.com'
   const ENDPOINT='http://localhost:8000'
 
@@ -269,7 +269,10 @@ const handleVideoSubmit=(e)=>{
   catch (error) {
    console.log(error)
   }
+  }
 
+  const testing=(e)=>{
+    e.preventDefault()
   }
   return (
 
@@ -355,15 +358,41 @@ const handleVideoSubmit=(e)=>{
     
    </form > */}
                 
-    <form  onSubmit={handleImage}>
+    {/* <form  onSubmit={handleImage}>
     <FileBase64
+    className="inputImg"
     type="file"
     multiple={false}
     onDone={({base64})=>setImage(base64)}
     required
     />
+
     <Button variant="contained" color="success"  type='submit' >Send Image</Button>
-    </form>
+    </form> */}
+    
+
+   <form onSubmit={testing} >
+    <label for='upload' id='upload-btn'>
+    <ImageIcon ></ImageIcon>
+      <span id='text' value={selectedFile}>Image</span>
+    
+    </label>
+    <input type='file' name='upload' id='upload'
+     
+    accept="image/*"  
+    onChange={(e) => setSelectedFile(e.target.files[0])} ></input>
+   </form>
+
+  {/* <Link
+  type='file'
+  variant="body2"
+  onClick={()=>{
+    console.log("licked")
+  }}
+>
+ <ImageIcon color='success'></ImageIcon>
+</Link> */}
+
 
     </div>
 
